@@ -23,7 +23,7 @@ rule zig-warn-page-allocator {
   enabled true
   priority 70
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*.zig" AND content CONTAINS "std.heap.page_allocator"
   MESSAGE "Using page_allocator directly is discouraged for general use. Prefer GeneralPurposeAllocator for development (catches leaks/UAF) or ArenaAllocator."
 }
@@ -32,7 +32,7 @@ rule zig-warn-http-server-production {
   enabled true
   priority 80
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*.zig" AND content CONTAINS "std.http.Server"
   MESSAGE "std.http.Server is intended for testing and can be vulnerable to DoS attacks. Ensure it is behind a robust reverse proxy in production."
 }
@@ -41,7 +41,7 @@ rule zig-warn-undefined-memory {
   enabled true
   priority 60
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*.zig" AND content CONTAINS "= undefined;"
   MESSAGE "Using 'undefined' can lead to non-deterministic behavior and information leaks if used improperly. Ensure memory is initialized before read or use secureZero for crypto."
 }
@@ -59,7 +59,7 @@ rule zig-path-traversal-cwd-open-file {
   enabled true
   priority 85
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*.zig" AND content CONTAINS "std.fs.cwd().openFile("
   MESSAGE "Directly opening files from cwd() with untrusted input can lead to path traversal. Prefer opening a Dir handle to a sandbox folder and using dir.openFile() to restrict access."
 }
@@ -68,7 +68,7 @@ rule zig-concurrency-thread-safe-allocator {
   enabled true
   priority 80
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*.zig" AND content CONTAINS "std.Thread.spawn" AND content NOT CONTAINS "ThreadSafeAllocator"
   MESSAGE "When spawning threads, ensure that any shared allocators are wrapped in std.heap.ThreadSafeAllocator to prevent data races and heap corruption."
 }
@@ -77,7 +77,7 @@ rule zig-build-zig-command-execution {
   enabled true
   priority 95
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/build.zig" AND content CONTAINS "std.ChildProcess.exec"
   MESSAGE "Executing shell commands inside build.zig is a high-risk operation that could lead to arbitrary code execution during compilation. Verify this is strictly necessary and safe."
 }

@@ -5,18 +5,16 @@ rule zig-warn-ignore-errors {
   enabled true
   priority 80
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*.zig" AND content LINE_REGEX "_\\s*=\\s*\\w+\\("
   MESSAGE "Ignoring error returns (e.g. `_ = trySomething()`) can leave the system in an inconsistent or insecure state if an operation fails."
-  PROMPT "Are you sure you want to ignore this error? Consider handling the error explicitly with 'catch' or 'try'."
 }
 
 rule zig-warn-release-fast {
   enabled true
   priority 85
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/build.zig" AND content CONTAINS "ReleaseFast"
   MESSAGE "ReleaseFast disables runtime safety checks like bounds checking, making the application vulnerable to buffer overflows."
-  PROMPT "Are you sure you want to use ReleaseFast? For production environments where security is a priority, ReleaseSafe is recommended."
 }
